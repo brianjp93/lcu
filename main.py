@@ -1,31 +1,33 @@
 import os
+import logging
+import asyncio
+from logging.config import dictConfig
+
 from lcu_driver import Connector
 from lcu_driver.connection import Connection
-import logging
-from logging.config import dictConfig
-from names import LCU
-import asyncio
-
 from lcu_driver.events.managers import WebsocketEventResponse
 
+from names import LCU
+
+
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            'format': '[{asctime}][{levelname}] {filename}:{funcName}:{lineno} :: {message}',
-            'style': "{",
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[{asctime}][{levelname}] {filename}:{funcName}:{lineno} :: {message}",
+            "style": "{",
         }
     },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "default",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
 }
 
@@ -38,7 +40,7 @@ seen_links: set[str] = set()
 
 @connector.ready
 async def connect(connection: Connection):
-    logger.info('Connected')
+    logger.info("Connected")
 
 
 def get_porofessor_link():
@@ -52,17 +54,19 @@ def open_porofessor(link: str):
     os.popen(f'start "" "{link}"')
 
 
-@connector.ws.register('/lol-lobby/')
+@connector.ws.register("/lol-lobby/")
 async def lobby_handler(connection: Connection, event: WebsocketEventResponse):
     print("\n\n")
-    logger.info(f'{type(event)=}')
+    logger.info(f"{type(event)=}")
     print(event.uri)
 
 
-@connector.ws.register('/lol-champ-select/v1/session')
-async def champ_select_session_handler(connection: Connection, event: WebsocketEventResponse):
+@connector.ws.register("/lol-champ-select/v1/session")
+async def champ_select_session_handler(
+    connection: Connection, event: WebsocketEventResponse
+):
     print("\n\n")
-    logger.info(f'{type(event)=}')
+    logger.info(f"{type(event)=}")
     print(event.uri)
 
     await asyncio.sleep(3)
@@ -72,5 +76,5 @@ async def champ_select_session_handler(connection: Connection, event: WebsocketE
         open_porofessor(link)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     connector.start()
