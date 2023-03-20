@@ -49,7 +49,7 @@ def get_porofessor_link():
     return link
 
 
-def open_porofessor(link: str):
+def open_link(link: str):
     logger.info("opening link")
     os.popen(f'start "" "{link}"')
 
@@ -73,7 +73,7 @@ async def champ_select_session_handler(
     link = get_porofessor_link()
     if link and link not in seen_links:
         seen_links.add(link)
-        open_porofessor(link)
+        open_link(link)
 
 
 if __name__ == "__main__":
