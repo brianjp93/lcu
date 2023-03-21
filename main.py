@@ -69,11 +69,14 @@ async def champ_select_session_handler(
     logger.info(f"{type(event)=}")
     print(event.uri)
 
+    game_id = event.data.get('gameId', None)
+
     await asyncio.sleep(3)
-    link = get_porofessor_link()
-    if link and link not in seen_links:
-        seen_links.add(link)
-        open_link(link)
+    if game_id and game_id not in seen_links:
+        link = get_porofessor_link()
+        seen_links.add(game_id)
+        if link:
+            open_link(link)
 
 
 if __name__ == "__main__":
