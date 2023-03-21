@@ -56,19 +56,18 @@ def open_link(link: str):
 
 @connector.ws.register("/lol-lobby/")
 async def lobby_handler(connection: Connection, event: WebsocketEventResponse):
-    print("\n\n")
-    logger.info(f"{type(event)=}")
-    print(event.uri)
+    print("\n")
+    logger.info(event.uri)
 
 
 @connector.ws.register("/lol-champ-select/v1/session")
 async def champ_select_session_handler(
     connection: Connection, event: WebsocketEventResponse
 ):
-    print("\n\n")
-    logger.info(f"{type(event)=}")
-    print(event.uri)
-
+    print("\n")
+    logger.info(event.uri)
+    if not event.data:
+        return
     game_id = event.data.get('gameId', None)
 
     await asyncio.sleep(3)
