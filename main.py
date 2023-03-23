@@ -2,6 +2,7 @@ import os
 import logging
 import asyncio
 from logging.config import dictConfig
+from pprint import pformat
 
 from lcu_driver import Connector
 from lcu_driver.connection import Connection
@@ -69,6 +70,7 @@ async def champ_select_session_handler(
     if not event.data:
         return
     game_id = event.data.get('gameId', None)
+    logger.info(f'{pformat(event.data, indent=2)}')
 
     await asyncio.sleep(3)
     if game_id and game_id not in seen_links:
