@@ -1,7 +1,6 @@
 import requests
 from urllib3 import disable_warnings
 from urllib.parse import quote
-import json
 import platform
 import psutil
 import base64
@@ -22,13 +21,8 @@ class LCU:
 
     @cached_property
     def lcu_name(self):
-        lcu_name = ""
         system = platform.system()
-        if system in ("Darwin", "Linux"):
-            lcu_name = "LeagueClientUx"
-        else:
-            lcu_name = "LeagueClientUx.exe"
-        return lcu_name
+        return "LeagueClientUx" if system in ("Darwin", "Linux") else "LeagueClientUx.exe"
 
     def is_lcu_available(self):
         return self.lcu_name in (p.name() for p in psutil.process_iter())
@@ -77,30 +71,13 @@ class LCU:
         }
 
     def get_participants(self):
-        participants = []
-
-        get_current_summoner = (
-            LCU_API.format(self.app_port) + "/lol-summoner/v1/current-summoner"
+        logger.info("* Getting Participants *")
+        get_lobby = (
+            RIOTCLIENT_API.format(self.riotclient_app_port)
+            + "/chat/v5/participants/champ-select"
         )
-        r = requests.get(get_current_summoner, headers=self.lcu_headers, verify=False)
-        r = json.loads(r.text)
-
-        get_champ_select = (
-            LCU_API.format(self.app_port) + "/lol-champ-select/v1/session"
-        )
-        r = requests.get(get_champ_select, headers=self.lcu_headers, verify=False)
-        r = json.loads(r.text)
-        if "errorCode" in r:
-            logger.warn("Not in champ select.")
-        else:
-            logger.info("* Getting Participants *")
-            get_lobby = (
-                RIOTCLIENT_API.format(self.riotclient_app_port)
-                + "/chat/v5/participants/champ-select"
-            )
-            r = requests.get(get_lobby, headers=self.riotclient_headers, verify=False)
-            r = json.loads(r.text)
-            participants = r["participants"]
+        r = requests.get(get_lobby, headers=self.riotclient_headers, verify=False)
+        participants = r.json()["participants"]
         return participants
 
     def get_participant_names(self):
