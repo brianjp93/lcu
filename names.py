@@ -11,13 +11,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 disable_warnings()
-LCU_API = "https://127.0.0.1:{}"
 RIOTCLIENT_API = "https://127.0.0.1:{}"
 
 
 class LCU:
     def __init__(self):
-        self.getLCUArguments()
+        self.get_lcu_args()
 
     @cached_property
     def lcu_name(self):
@@ -27,7 +26,7 @@ class LCU:
     def is_lcu_available(self):
         return self.lcu_name in (p.name() for p in psutil.process_iter())
 
-    def getLCUArguments(self):
+    def get_lcu_args(self):
         if not self.is_lcu_available():
             logger.warn(f"No {self.lcu_name} found. Login to an account and try again.")
             return
@@ -71,12 +70,9 @@ class LCU:
         }
 
     def get_participants(self):
-        logger.info("* Getting Participants *")
-        get_lobby = (
-            RIOTCLIENT_API.format(self.riotclient_app_port)
-            + "/chat/v5/participants/champ-select"
-        )
-        r = requests.get(get_lobby, headers=self.riotclient_headers, verify=False)
+        logger.info("Getting Participants")
+        url = RIOTCLIENT_API.format(self.riotclient_app_port) + "/chat/v5/participants/champ-select"
+        r = requests.get(url, headers=self.riotclient_headers, verify=False)
         participants = r.json()["participants"]
         return participants
 
