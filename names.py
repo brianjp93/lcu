@@ -73,7 +73,7 @@ class LCU:
         return [x["name"] for x in participants]
 
     def get_porofessor_link(self):
-        base = f"https://porofessor.gg/pregame/{self.process_args['region']}/"
+        base = f"https://porofessor.gg/pregame/{self.process_args['region'].lower()}/"
         names = self.get_participant_names()
         if names:
             param = ",".join(quote(name) for name in names)
