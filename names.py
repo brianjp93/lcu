@@ -6,12 +6,13 @@ import base64
 import os
 import logging
 import re
+import platform
 
 
 logger = logging.getLogger(__name__)
 disable_warnings()
 RIOTCLIENT_API = "https://127.0.0.1:{}"
-LCU_NAME = 'LeagueClientUx'
+LCU_NAME = "LeagueClientUx" if platform.system() in ("Darwin", "Linux") else "LeagueClientUx.exe"
 
 
 class LCU:
@@ -21,7 +22,7 @@ class LCU:
 
     def is_lcu_available(self):
         for p in psutil.process_iter():
-            if LCU_NAME in p.name():
+            if LCU_NAME == p.name():
                 return True
         return False
 
@@ -32,7 +33,7 @@ class LCU:
 
         matcher = re.compile(r'^--([^=]+)=(.+)$')
         for p in psutil.process_iter():
-            if LCU_NAME in p.name():
+            if LCU_NAME == p.name():
                 args = p.cmdline()
                 for a in args:
                     if match := matcher.match(a):
