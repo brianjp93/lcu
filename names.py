@@ -79,6 +79,14 @@ class LCU:
             param = ",".join(quote(name) for name in names)
             return base + param
         return None
+    
+    def get_opgg_link(self):
+        base = f"https://www.op.gg/multisearch/{self.process_args['region'].lower()}?summoners="
+        names = self.get_participant_names()
+        if names:
+            param = ",%20".join(quote(name) for name in names)
+            return base + param
+        return None
 
 
 if __name__ == "__main__":
