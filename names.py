@@ -68,9 +68,9 @@ class LCU:
         participants = r.json()["participants"]
         return participants
 
-    def get_participant_names(self):
+    def get_participant_names(self,sep='-'):
         participants = self.get_participants() or []
-        return [f"{x['game_name']}-{x['game_tag']}" for x in participants]
+        return [f"{x['game_name']}{sep}{x['game_tag']}" for x in participants]
 
     def get_porofessor_link(self):
         base = f"https://porofessor.gg/pregame/{self.process_args['region'].lower()}/"
@@ -82,7 +82,7 @@ class LCU:
 
     def get_opgg_link(self):
         base = f"https://www.op.gg/multisearch/{self.process_args['region'].lower()}?summoners="
-        names = self.get_participant_names()
+        names = self.get_participant_names('#')
         if names:
             param = ",%20".join(quote(name) for name in names)
             return base + param
